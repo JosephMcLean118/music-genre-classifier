@@ -1,10 +1,5 @@
 import customtkinter
 from customtkinter import filedialog as fd
-import numpy as np
-import librosa
-import librosa.display
-import IPython.display as ipd
-from glob import glob
 import pygame
 
 
