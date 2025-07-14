@@ -1,6 +1,7 @@
 import customtkinter
 from customtkinter import filedialog as fd
 import pygame
+from pydub import AudioSegment
 
 
 
@@ -9,10 +10,29 @@ customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("dark-blue")
 
 
-#Create small window with a title and button allowing user to uplaod their audiofile
+#Create small window with a title and button allowing user to uplaod their audio file
 root = customtkinter.CTk()
 root.geometry("500x350")
 root.title("Music Genre Predicter")
+
+
+
+#Prepare audio
+
+#make all audio at most 30 seconds, mono and 22050Hz sample rate and export as wav
+
+def prepare_audio(file_path):
+    set_length = 30000
+    sample_rate = 22050
+    audio = AudioSegment.from_file(file_path)
+    audio = audio.set_channels(1).set_frame_rate(sample_rate)
+    if len(audio) > set_length:
+        audio = audio[:set_length]
+    output_path = "processed_audio.wav"
+    audio.export(output_path, format ="wav")
+    return output_path
+
+    
 
 
 #Functions for all buttons in the GUI - UPLOAD, PLAY, PAUSE/RESUME
@@ -23,6 +43,7 @@ def file_upload():
     if file_path:
         #check file path
         print(f"File selected: {file_path}")
+        processed_audio = prepare_audio(file_path)
 
 def play_song():
     pygame.mixer.init()
@@ -38,6 +59,9 @@ def pause_song():
     else:
         pygame.mixer.music.pause()
         pause = True
+
+
+#GUI
 
 top_frame = customtkinter.CTkFrame(master=root)
 top_frame.pack(pady=20, padx=20, fill="both", expand=True)
